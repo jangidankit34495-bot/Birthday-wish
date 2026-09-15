@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise 🎂</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3,#8e8cff);
+  color:#fff; overflow-x:hidden;
+}
+.screen{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:25px; text-align:center;
+}
+.card{
+  width:min(520px,100%); padding:35px 25px; border-radius:28px;
+  background:rgba(255,255,255,.16); backdrop-filter:blur(12px);
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+h1{font-size:clamp(2rem,8vw,4rem); margin:10px 0}
+p{font-size:1.05rem; line-height:1.6}
+button{
+  border:0; border-radius:999px; padding:15px 28px; font-size:1rem;
+  font-weight:bold; cursor:pointer; margin-top:15px;
+  background:#fff; color:#ff4f81; box-shadow:0 8px 25px rgba(0,0,0,.2);
+}
+button:hover{transform:scale(1.04)}
+input{
+  width:100%; padding:15px; border:0; outline:0; border-radius:14px;
+  margin-top:15px; font-size:1rem; text-align:center;
+}
+.hidden{display:none!important}
+#error{color:#ffe2e2;min-height:25px;font-weight:bold}
+.heart{font-size:4rem;animation:pulse 1.3s infinite}
+@keyframes pulse{50%{transform:scale(1.15)}}
+.gallery{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:25px 0
+}
+.gallery img{
+  width:100%;height:190px;object-fit:cover;border-radius:18px;
+  border:3px solid rgba(255,255,255,.7)
+}
+@media(max-width:480px){.gallery img{height:145px}}
+.cake{position:relative;width:210px;height:190px;margin:25px auto}
+.layer{position:absolute;left:20px;width:170px;height:55px;border-radius:12px;
+background:linear-gradient(#ffb3c7,#ff6f9d);box-shadow:0 5px 0 rgba(0,0,0,.1)}
+.l1{bottom:10px}.l2{bottom:55px;left:35px;width:140px}.l3{bottom:100px;left:50px;width:110px}
+.candle{position:absolute;bottom:145px;left:98px;width:14px;height:42px;background:#fff}
+.flame{position:absolute;bottom:183px;left:98px;font-size:25px;animation:flicker .6s infinite alternate}
+@keyframes flicker{to{transform:scale(1.2)}}
+.message{
+  background:rgba(255,255,255,.14);border-radius:20px;padding:20px;margin-top:20px
+}
+.confetti{position:fixed;top:-20px;font-size:22px;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+
+<section id="home" class="screen">
+  <div class="card">
+    <div class="heart">💖</div>
+    <h1>Hey Birthday Star! 🎂</h1>
+    <p>Someone has prepared a little surprise just for you...</p>
+    <button onclick="showPassword()">🎁 Open Surprise</button>
+  </div>
+</section>
+
+<section id="passwordScreen" class="screen hidden">
+  <div class="card">
+    <div style="font-size:3rem">🔐</div>
+    <h1>Secret Surprise</h1>
+    <p>Enter the birthday password to unlock your surprise.</p>
+    <input id="password" type="password" placeholder="Enter password">
+    <div id="error"></div>
+    <button onclick="unlock()">✨ Unlock</button>
+    <p style="font-size:.85rem;opacity:.8">Hint: Change the password in the HTML file.</p>
+  </div>
+</section>
+
+<section id="surprise" class="screen hidden">
+  <div class="card">
+    <div style="font-size:3rem">🎉🎈🎊</div>
+    <h1>Happy Birthday, FRIEND_NAME! 🥳</h1>
+    <p>Today is all about celebrating YOU! 💕</p>
+
+    <div class="cake">
+      <div class="flame">🔥</div>
+      <div class="candle"></div>
+      <div class="layer l3"></div>
+      <div class="layer l2"></div>
+      <div class="layer l1"></div>
+    </div>
+
+    <button onclick="blowCandles()">🕯️ Make a Wish</button>
+
+    <div class="message">
+      <h2>💌 A Special Birthday Wish</h2>
+      <p>
+        May your birthday be filled with laughter, happiness and unforgettable
+        moments. May all your dreams come true and may this new year of your
+        life bring you lots of reasons to smile. Keep shining! ✨
+      </p>
+    </div>
+
+    <h2>📸 Our Memories</h2>
+    <div class="gallery">
+      <img src="photos/photo1.jpg" alt="Memory 1">
+      <img src="photos/photo2.jpg" alt="Memory 2">
+      <img src="photos/photo3.jpg" alt="Memory 3">
+      <img src="photos/photo4.jpg" alt="Memory 4">
+    </div>
+
+    <p>Made with ❤️ especially for you.</p>
+    <button onclick="location.reload()">🔄 Replay Surprise</button>
+  </div>
+</section>
+
+<script>
+// ================= CUSTOMIZE HERE =================
+const PASSWORD = "1234";
+const FRIEND_NAME = "FRIEND_NAME";
+// ===================================================
+
+function showPassword(){
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("passwordScreen").classList.remove("hidden");
+  document.getElementById("password").focus();
+}
+
+function unlock(){
+  const entered=document.getElementById("password").value;
+  if(entered===PASSWORD){
+    document.getElementById("passwordScreen").classList.add("hidden");
+    document.getElementById("surprise").classList.remove("hidden");
+    document.querySelector("#surprise h1").innerHTML =
+      `Happy Birthday, ${FRIEND_NAME}! 🥳`;
+    confetti();
+  }else{
+    document.getElementById("error").textContent="❌ Wrong password. Try again!";
+  }
+}
+
+document.getElementById("password").addEventListener("keydown",e=>{
+  if(e.key==="Enter") unlock();
+});
+
+function blowCandles(){
+  document.querySelector(".flame").textContent="✨";
+  alert("Make a wish! 🎂💫");
+  confetti();
+}
+
+function confetti(){
+  const symbols=["🎉","🎊","💖","✨","🎈","🌟"];
+  for(let i=0;i<45;i++){
+    const x=document.createElement("div");
+    x.className="confetti";
+    x.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    x.style.left=Math.random()*100+"vw";
+    x.style.animationDuration=(2+Math.random()*3)+"s";
+    x.style.animationDelay=Math.random()*1.5+"s";
+    document.body.appendChild(x);
+    setTimeout(()=>x.remove(),5500);
+  }
+}
+</script>
+</body>
+</html>
